@@ -1,0 +1,56 @@
+//
+//  NoteViewController.swift
+//  Notebook
+//
+//  Created by Naw on 22/01/2022.
+//
+
+import UIKit
+
+class NoteViewController: UIViewController {
+
+    @IBOutlet weak var noteTextView: UITextView!
+    
+    var notebookObject:Notebook! {
+        didSet {
+            self.configureView()
+        }
+    }
+    
+    var noteObject:Note?
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.configureView()
+    }
+    
+    
+    
+    func configureView () {
+        if noteObject == nil {
+            self.navigationItem.title = "Nieuwe Notitie"
+        }else{
+            if let content = noteObject?.content {
+                noteTextView.text = content
+                self.navigationItem.title = content
+            }
+        }
+        
+        navigationItem.largeTitleDisplayMode = .never
+
+    }
+
+    
+    @IBAction func saveNote(_ sender: Any) {
+        if noteObject == nil { // Create new Note
+            NotesManager.shared.addNote(notebookObject, content: noteTextView.text)
+            _ = navigationController?.popViewController(animated: true)
+            
+        }else{ // Update
+            NotesManager.shared.updateNote(noteObject!, newContent: noteTextView.text)
+        }
+    }
+    
+}
+
